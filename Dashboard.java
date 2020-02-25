@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.sql.*;
 import java.time.LocalTime;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -26,7 +27,6 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         RegistrationPn.setVisible(false);
         seeDetail.setVisible(false);
-        
         
        
     }
@@ -62,7 +62,9 @@ public class Dashboard extends javax.swing.JFrame {
         Cancle = new javax.swing.JButton();
         Submit1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-
+        
+ 
+        
         seeDetail.setTitle("Details");
         seeDetail.setBackground(new java.awt.Color(204, 204, 255));
         seeDetail.setBounds(new java.awt.Rectangle(200, 100, 980, 633));
@@ -79,13 +81,23 @@ public class Dashboard extends javax.swing.JFrame {
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jTable1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTable1.setAutoCreateRowSorter(true);
+        
+                
+        
+        
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
+                
+                //Sidd code for database
+               
+               
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                
+                
             },
+            
+            
+            
             new String [] {
                 "Computer number", "SIMS", "Date", "SignIn(time)", "SignOut(time)"
             }
@@ -106,7 +118,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         jTable1.setIntercellSpacing(new java.awt.Dimension(5, 10));
-        jTable1.setPreferredSize(new java.awt.Dimension(400, 200));
+        jTable1.setPreferredSize(new java.awt.Dimension(400, 200000));
         jTable1.setRowHeight(25);
         jTable1.setRowMargin(10);
         jTable1.setSelectionBackground(new java.awt.Color(255, 255, 255));
@@ -487,10 +499,12 @@ public class Dashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
     }                                    
 
-    private void RegistrationMouseClicked(java.awt.event.MouseEvent evt) {                                          
+    private void RegistrationMouseClicked(java.awt.event.MouseEvent evt) {    
+        
         // TODO add your handling code here:
         if(!RegistrationPn.isVisible()){
-            RegistrationPn.setVisible(true);
+            RegistrationPn.setVisible(true);       
+            
         }     
     }                                         
 
@@ -505,8 +519,31 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void SeeDetails1MouseClicked(java.awt.event.MouseEvent evt) {                                         
         // TODO add your handling code here:
-         
-        seeDetail.setVisible(true);
+        if(!seeDetail.isVisible()){ 
+            seeDetail.setVisible(true);
+        }
+        //Table for see Details    
+             model=(DefaultTableModel) jTable1.getModel();
+         try{
+                    Class.forName("com.mysql.jdbc.Driver");
+							//local host is good
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
+							
+                    PreparedStatement stmt = con.prepareStatement("select * from students");
+                    
+                    ResultSet rs = stmt.executeQuery();
+                    
+                    while(rs.next()){
+										 
+                        model.addRow(new Object[]{rs.getInt(1),rs.getInt(2), rs.getDate(3),rs.getTime(4),rs.getTime(5)});
+                    }
+                		
+		con.close();
+		}catch(Exception a){System.out.println(a);}
+        
+        
+        
+        
     }                                        
 
     private void Submit1ActionPerformed(java.awt.event.ActionEvent evt) {                                        
@@ -539,6 +576,8 @@ public class Dashboard extends javax.swing.JFrame {
         }catch(Exception a){
             System.out.println(a);
         }
+        SIMS.setText("");
+        pcNo.setText("");
     }                                       
 
     /**
@@ -605,7 +644,8 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField pcNo;
     private javax.swing.JFrame seeDetail;
-    // End of variables declaration                   
+    // End of variables declaration              
+           DefaultTableModel model;
 
  
 }
