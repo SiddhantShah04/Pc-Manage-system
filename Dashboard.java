@@ -883,7 +883,7 @@ public class Dashboard extends javax.swing.JFrame {
                 		
 		con.close();
 		}catch(Exception a){System.out.println(a);}   
-        
+        jTextField2.setText("");
     }    
     
 
