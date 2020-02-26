@@ -149,7 +149,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         OK.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         OK.setForeground(new java.awt.Color(51, 51, 255));
-        OK.setText("OK");
+        OK.setText("Search");
         OK.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         OK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -718,6 +718,24 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void OKActionPerformed(java.awt.event.ActionEvent evt) {                                   
         // TODO add your handling code here:
+        try{
+                    Class.forName("com.mysql.jdbc.Driver");
+							//local host is good
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
+							
+                    PreparedStatement stmt = con.prepareStatement("select * from students where pc=?");
+                    stmt.setInt(1,Integer.parseInt(jTextField1.getText()));
+                    ResultSet rs = stmt.executeQuery();
+                    model.setRowCount(0);
+                    while(rs.next()){
+										 
+                        model.addRow(new Object[]{rs.getInt(1),rs.getInt(2), rs.getDate(3),rs.getTime(4),rs.getTime(5)});
+                    }
+                		
+		con.close();
+		}catch(Exception a){System.out.println(a);}
+         
+        
     }                                  
 
     private void Submit1ActionPerformed(java.awt.event.ActionEvent evt) {   
