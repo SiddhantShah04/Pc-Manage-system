@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package admin;
+
 
 import java.awt.Color;
 import java.awt.Font;
 import java.sql.*;
 import java.time.LocalTime;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -17,18 +19,32 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Dashboard extends javax.swing.JFrame {
     
-    
     /**
      * Creates new form Dashboard
      */
-  
-    
     public Dashboard() {
         initComponents();
         RegistrationPn.setVisible(false);
         seeDetail.setVisible(false);
+        model=(DefaultTableModel) jTable1.getModel();
+        modelDashobard =(DefaultTableModel) dashboardTable.getModel();
         
-       
+        try{
+                    Class.forName("com.mysql.jdbc.Driver");
+							//local host is good
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
+							
+                    PreparedStatement stmt = con.prepareStatement("select * from students where endTime is Null");
+                    
+                    ResultSet rs = stmt.executeQuery();
+                    
+                    while(rs.next()){
+                        				 
+                        modelDashobard.addRow(new Object[]{rs.getInt(1),rs.getInt(2), rs.getDate(3),rs.getTime(4)});
+                    }
+                		
+		con.close();
+		}catch(Exception a){System.out.println(a);}   
     }
 
     /**
@@ -46,6 +62,8 @@ public class Dashboard extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        OK = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         Registration = new javax.swing.JLabel();
         SeeDetails1 = new javax.swing.JLabel();
@@ -57,19 +75,26 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        
         pcNo = new javax.swing.JTextField();
         SIMS = new javax.swing.JTextField();
         Cancle = new javax.swing.JButton();
         Submit1 = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        
-            
-        
+        DashbordrightPanel = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        dashboardTable = new javax.swing.JTable();
+        jPanel6 = new javax.swing.JPanel();
+        jTextField2 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+
         seeDetail.setTitle("Details");
         seeDetail.setBackground(new java.awt.Color(204, 204, 255));
         seeDetail.setBounds(new java.awt.Rectangle(200, 100, 980, 633));
         seeDetail.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        seeDetail.setPreferredSize(new java.awt.Dimension(1000, 700));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(102, 0, 255));
@@ -79,25 +104,21 @@ public class Dashboard extends javax.swing.JFrame {
         jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(102, 0, 102));
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
+            }
+        });
 
-        jTable1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTable1.setAutoCreateRowSorter(true);
-        
-                
-        
-        
+        jTable1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-                
-                //Sidd code for database
-               
-               
             new Object [][] {
                 
-                
             },
-            
-            
-            
             new String [] {
                 "Computer number", "SIMS", "Date", "SignIn(time)", "SignOut(time)"
             }
@@ -118,31 +139,38 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         jTable1.setIntercellSpacing(new java.awt.Dimension(5, 10));
-        jTable1.setPreferredSize(new java.awt.Dimension(400, 200000));
+        jTable1.setPreferredSize(new java.awt.Dimension(400, 20000));
         jTable1.setRowHeight(25);
-        jTable1.setRowMargin(10);
         jTable1.setSelectionBackground(new java.awt.Color(255, 255, 255));
         jTable1.setSelectionForeground(new java.awt.Color(255, 0, 51));
         jTable1.setSurrendersFocusOnKeystroke(true);
         jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
 
-       
-    
+        OK.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        OK.setForeground(new java.awt.Color(51, 51, 255));
+        OK.setText("OK");
+        OK.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        OK.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OKActionPerformed(evt);
+            }
+        });
 
-        
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(285, 285, 285)
+                .addGap(251, 251, 251)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 358, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(OK)
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -150,9 +178,10 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(OK))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 593, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -169,10 +198,26 @@ public class Dashboard extends javax.swing.JFrame {
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(200, 50, 0, 0));
         setUndecorated(true);
         setResizable(false);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                formComponentHidden(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(33, 63, 86));
 
@@ -240,7 +285,7 @@ public class Dashboard extends javax.swing.JFrame {
                 .addComponent(Registration, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(47, 47, 47)
                 .addComponent(SeeDetails1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(432, Short.MAX_VALUE))
         );
 
         close.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
@@ -282,13 +327,14 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 204));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Computer number");
+        jLabel3.setText("Computer");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(51, 51, 255));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("SIMS");
 
+           
         pcNo.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         pcNo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         pcNo.setSelectedTextColor(new java.awt.Color(102, 153, 255));
@@ -329,6 +375,28 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 51, 51));
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         RegistrationPn.setVisible(true);
 
         javax.swing.GroupLayout RegistrationPnLayout = new javax.swing.GroupLayout(RegistrationPn);
@@ -357,11 +425,17 @@ public class Dashboard extends javax.swing.JFrame {
                                     .addComponent(SIMS, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 65, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegistrationPnLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(83, 83, 83))
         );
         RegistrationPnLayout.setVerticalGroup(
             RegistrationPnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(RegistrationPnLayout.createSequentialGroup()
-                .addGap(77, 77, 77)
+                .addContainerGap()
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addGroup(RegistrationPnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -375,7 +449,7 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGroup(RegistrationPnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Cancle, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Submit1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(99, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -413,22 +487,121 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel1.setOpaque(true);
 
+        dashboardTable.setAutoCreateRowSorter(true);
+        dashboardTable.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        dashboardTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                
+            },
+            new String [] {
+                "Computer number", "SIMS", "Date", "SignIn(time)"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        dashboardTable.setIntercellSpacing(new java.awt.Dimension(5, 10));
+        dashboardTable.setPreferredSize(new java.awt.Dimension(400, 20000));
+        dashboardTable.setRowHeight(25);
+        dashboardTable.setSelectionBackground(new java.awt.Color(255, 255, 255));
+        dashboardTable.setSelectionForeground(new java.awt.Color(255, 0, 51));
+        dashboardTable.setSurrendersFocusOnKeystroke(true);
+        dashboardTable.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(dashboardTable);
+
+        jTextField2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jTextField2.setForeground(new java.awt.Color(51, 51, 255));
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton1.setText("SignOut");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("SIMS Number");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(93, 93, 93)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout DashbordrightPanelLayout = new javax.swing.GroupLayout(DashbordrightPanel);
+        DashbordrightPanel.setLayout(DashbordrightPanelLayout);
+        DashbordrightPanelLayout.setHorizontalGroup(
+            DashbordrightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DashbordrightPanelLayout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addGroup(DashbordrightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        DashbordrightPanelLayout.setVerticalGroup(
+            DashbordrightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DashbordrightPanelLayout.createSequentialGroup()
+                .addGap(53, 53, 53)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 614, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 562, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(26, 26, 26)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 78, Short.MAX_VALUE))))
+                        .addGap(134, 134, 134))))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(256, Short.MAX_VALUE)
+                    .addComponent(DashbordrightPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -437,9 +610,14 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(44, 44, 44)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 78, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(DashbordrightPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -469,11 +647,10 @@ public class Dashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
         close.setBackground(new Color(255,51,51));
         
-    }    
-    
+    }                                
+
     private void closeMouseDragged(java.awt.event.MouseEvent evt) {                                   
         // TODO add your handling code here:
-       
     }                                  
 
     private void closeMouseExited(java.awt.event.MouseEvent evt) {                                  
@@ -495,40 +672,22 @@ public class Dashboard extends javax.swing.JFrame {
          SeeDetails1.setBackground(new Color(33,63,86));
     }                                       
 
-    private void CancleMouseEntered(java.awt.event.MouseEvent evt) {                                    
-        // TODO add your handling code here:
-        
-    }                                   
-
-    private void SIMSActionPerformed(java.awt.event.ActionEvent evt) {                                     
-        // TODO add your handling code here:
-    }                                    
-
-    private void RegistrationMouseClicked(java.awt.event.MouseEvent evt) {    
-        
+    private void RegistrationMouseClicked(java.awt.event.MouseEvent evt) {                                          
         // TODO add your handling code here:
         if(!RegistrationPn.isVisible()){
-            RegistrationPn.setVisible(true);       
-            
+            DashbordrightPanel.setVisible(false);
+            RegistrationPn.setVisible(true);
         }     
     }                                         
 
-    private void Submit1MouseEntered(java.awt.event.MouseEvent evt) {                                     
-        // TODO add your handling code here:
-    }                                    
-
-    private void CancleMouseClicked(java.awt.event.MouseEvent evt) {                                    
-        // TODO add your handling code here:
-        RegistrationPn.setVisible(false);
-    }                                   
-
     private void SeeDetails1MouseClicked(java.awt.event.MouseEvent evt) {                                         
         // TODO add your handling code here:
+
         if(!seeDetail.isVisible()){ 
             seeDetail.setVisible(true);
         }
         //Table for see Details    
-             model=(DefaultTableModel) jTable1.getModel();
+             
          try{
                     Class.forName("com.mysql.jdbc.Driver");
 							//local host is good
@@ -537,7 +696,7 @@ public class Dashboard extends javax.swing.JFrame {
                     PreparedStatement stmt = con.prepareStatement("select * from students");
                     
                     ResultSet rs = stmt.executeQuery();
-                    
+                    model.setRowCount(0);
                     while(rs.next()){
 										 
                         model.addRow(new Object[]{rs.getInt(1),rs.getInt(2), rs.getDate(3),rs.getTime(4),rs.getTime(5)});
@@ -545,45 +704,170 @@ public class Dashboard extends javax.swing.JFrame {
                 		
 		con.close();
 		}catch(Exception a){System.out.println(a);}
-        
-        
-        
-        
+         
+        seeDetail.setVisible(true);
     }                                        
 
-    private void Submit1ActionPerformed(java.awt.event.ActionEvent evt) {                                        
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {                                       
         // TODO add your handling code here:
+    }                                      
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {                                     
+        // TODO add your handling code here:
+    }                                    
+
+    private void OKActionPerformed(java.awt.event.ActionEvent evt) {                                   
+        // TODO add your handling code here:
+    }                                  
+
+    private void Submit1ActionPerformed(java.awt.event.ActionEvent evt) {   
+        
+        
+         try{
+                    Class.forName("com.mysql.jdbc.Driver");
+							//local host is good
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
+							
+                    PreparedStatement stmt = con.prepareStatement("select * from students where endTime is Null and SIMS=?");
+                    
+                    stmt.setInt(1,Integer.parseInt(SIMS.getText()));
+                    ResultSet rs = stmt.executeQuery();
+                  
+                    if(rs.next()){
+                     JFrame f;  
+                        f=new JFrame();  
+                        JOptionPane.showMessageDialog(f,"This SIMS number is already Log in with some computer","Alert",JOptionPane.WARNING_MESSAGE);    				 
+                    return;	 
+                    }
+                	
+		con.close();
+		}catch(Exception a){System.out.println(a);}   
+        
+        // TODO add your handling code here:
+        if(Integer.parseInt(pcNo.getText())>20){
+            JFrame f;  
+            f=new JFrame();  
+            JOptionPane.showMessageDialog(f,"Computer number cannot be greater than 16","Alert",JOptionPane.WARNING_MESSAGE);     
+           
+        }
+            
+        else{
         try{
             Class.forName("com.mysql.jdbc.Driver");
-	    //local host is good
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin"); 
+            //local host is good
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");
             String sql = "insert into students values(?,?,?,?,?)";
-	    PreparedStatement spst = con.prepareStatement(sql);
-            
-            spst.setInt(1,Integer.parseInt(SIMS.getText()));
-	    spst.setInt(2,Integer.parseInt(pcNo.getText()));
-            
-	    java.util.Date date = new java.util.Date();  
-							
-	    long ctm=System.currentTimeMillis();  
-	    Date d = new Date(ctm);  
-	    spst.setDate(3,d);
-							
-	    LocalTime now = LocalTime.now();
-	    Time time = Time.valueOf( now );
-	    spst.setTime(4,time);
-							
-	    spst.setTime(5,null);
-	    spst.executeUpdate();
-	    con.close();
-            
-            
+            PreparedStatement spst = con.prepareStatement(sql);
+
+            spst.setInt(1,Integer.parseInt(pcNo.getText()));
+            spst.setInt(2,Integer.parseInt(SIMS.getText()));
+
+            java.util.Date date = new java.util.Date();
+
+            long ctm=System.currentTimeMillis();
+            Date d = new Date(ctm);
+            spst.setDate(3,d);
+
+            LocalTime now = LocalTime.now();
+            Time time = Time.valueOf( now );
+            spst.setTime(4,time);
+
+            spst.setTime(5,null);
+            spst.executeUpdate();
+            con.close();
+             SIMS.setText("");
+            pcNo.setText("");
+
         }catch(Exception a){
             System.out.println(a);
+            }
+        try{
+                    Class.forName("com.mysql.jdbc.Driver");
+							//local host is good
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
+							
+                    PreparedStatement stmt = con.prepareStatement("select * from students where endTime is Null");
+                    
+                    ResultSet rs = stmt.executeQuery();
+                     modelDashobard.setRowCount(0);
+                    while(rs.next()){
+                        				 
+                        modelDashobard.addRow(new Object[]{rs.getInt(1),rs.getInt(2), rs.getDate(3),rs.getTime(4)});
+                    }
+                		
+		con.close();
+		}catch(Exception a){System.out.println(a);}   
         }
-        SIMS.setText("");
-        pcNo.setText("");
-    }                                       
+    }         
+        
+
+    private void Submit1MouseEntered(java.awt.event.MouseEvent evt) {                                     
+        // TODO add your handling code here:
+
+
+    }                                    
+
+    private void CancleMouseEntered(java.awt.event.MouseEvent evt) {                                    
+        // TODO add your handling code here:
+
+    }                                   
+
+    private void CancleMouseClicked(java.awt.event.MouseEvent evt) {                                    
+        // TODO add your handling code here:
+        
+        RegistrationPn.setVisible(false);
+        DashbordrightPanel.setVisible(true);
+    }                                   
+
+    private void SIMSActionPerformed(java.awt.event.ActionEvent evt) {                                     
+        // TODO add your handling code here:
+    }                                    
+
+    private void formComponentHidden(java.awt.event.ComponentEvent evt) {                                     
+        // TODO add your handling code here:
+    }                                    
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {                                      
+        // TODO add your handling code here:
+       
+        
+        try{
+                    Class.forName("com.mysql.jdbc.Driver");
+							//local host is good
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
+							
+                   String sql = "UPDATE students SET endTime=? WHERE sims = ? and endTime is Null";
+                   PreparedStatement spst = con.prepareStatement(sql);
+                   
+                   LocalTime now = LocalTime.now();
+                   Time time = Time.valueOf( now );
+	
+                   spst.setTime(1,time);
+                   spst.setInt(2,Integer.parseInt( jTextField2.getText()));
+                   spst.executeUpdate();
+                   
+		con.close();
+		}catch(Exception a){System.out.println(a);}
+        
+        try{
+                    Class.forName("com.mysql.jdbc.Driver");
+							//local host is good
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
+							
+                    PreparedStatement stmt = con.prepareStatement("select * from students where endTime is Null");
+                    
+                    ResultSet rs = stmt.executeQuery();
+                     modelDashobard.setRowCount(0);
+                    while(rs.next()){
+                        				 
+                        modelDashobard.addRow(new Object[]{rs.getInt(1),rs.getInt(2), rs.getDate(3),rs.getTime(4)});
+                    }
+                		
+		con.close();
+		}catch(Exception a){System.out.println(a);}   
+        
+    }    
+    
 
     /**
      * @param args the command line arguments
@@ -628,31 +912,40 @@ public class Dashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton Cancle;
+    private javax.swing.JPanel DashbordrightPanel;
+    private javax.swing.JButton OK;
     private javax.swing.JLabel Registration;
-    public javax.swing.JPanel RegistrationPn;
+    private javax.swing.JPanel RegistrationPn;
     private javax.swing.JTextField SIMS;
     private javax.swing.JLabel SeeDetails1;
     private javax.swing.JButton Submit1;
     private javax.swing.JLabel close;
+    private javax.swing.JTable dashboardTable;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField pcNo;
     private javax.swing.JFrame seeDetail;
-    
-    // End of variables declaration              
-           DefaultTableModel model;
+    DefaultTableModel model,modelDashobard;
+    // End of variables declaration                   
 
- //ok branch is withot button
+ 
 }
-
