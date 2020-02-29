@@ -6,7 +6,7 @@
 
 
 import java.awt.Color;
-import java.awt.Font;
+import java.io.FileWriter;
 import java.sql.*;
 import java.time.LocalTime;
 import javax.swing.JFrame;
@@ -27,6 +27,7 @@ public class Dashboard extends javax.swing.JFrame {
         RegistrationPn.setVisible(false);
         seeDetail.setVisible(false);
         model=(DefaultTableModel) jTable1.getModel();
+        
         modelDashobard =(DefaultTableModel) dashboardTable.getModel();
         
         try{
@@ -121,7 +122,7 @@ public class Dashboard extends javax.swing.JFrame {
                 
             },
             new String [] {
-                "Computer number", "SIMS", "Date", "SignIn(time)", "SignOut(time)"
+                "              Computer number", "                        SIMS", "                       Date", "                 SignIn(time)", "                SignOut(time)"
             }
         ) {
             Class[] types = new Class [] {
@@ -160,7 +161,7 @@ public class Dashboard extends javax.swing.JFrame {
 
          Print.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         Print.setForeground(new java.awt.Color(102, 102, 255));
-        Print.setText("Print");
+        Print.setText("In Excel");
         Print.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PrintActionPerformed(evt);
@@ -726,7 +727,7 @@ public class Dashboard extends javax.swing.JFrame {
                     model.setRowCount(0);
                     while(rs.next()){
 										 
-                        model.addRow(new Object[]{rs.getInt(1),rs.getInt(2), rs.getDate(3),rs.getTime(4),rs.getTime(5)});
+                        model.addRow(new Object[]{rs.getInt(1)+"                 ",rs.getInt(2)+"              ","       "+ rs.getDate(3),"          "+rs.getTime(4),"         "+rs.getTime(5)});
                     }
                 		
 		con.close();
@@ -837,7 +838,7 @@ public class Dashboard extends javax.swing.JFrame {
                      modelDashobard.setRowCount(0);
                     while(rs.next()){
                         				 
-                        modelDashobard.addRow(new Object[]{rs.getInt(1),rs.getInt(2), rs.getDate(3),rs.getTime(4)});
+                        modelDashobard.addRow(new Object[]{+rs.getInt(1)+" ",rs.getInt(2)+" ",rs.getDate(3)+" ",rs.getTime(4)+" "});
                     }
                 		
 		con.close();
@@ -869,13 +870,50 @@ public class Dashboard extends javax.swing.JFrame {
     }  
     private void PrintActionPerformed(java.awt.event.ActionEvent evt) {                                      
         // TODO add your handling code here:
-        try{
-    jTable1.print();
-    }catch(java.awt.print.PrinterException e){
-        System.out.println(e);
-    }
-    }   
-
+        
+    String filename ="d:\\LibraryPcData\\LibrayDetails.csv";
+        try {
+            FileWriter fw = new FileWriter(filename);
+            fw.append("Computer Number");
+            fw.append(",");
+            fw.append("SIMS");
+            fw.append(",");
+            fw.append("Date");
+            fw.append(",");
+            fw.append("SignIn Time");
+            fw.append(",");
+            fw.append("SignOut Time");
+            fw.append(",");
+            fw.append("\n");
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1", "root", "admin");
+            String query = "select * from students order by pc";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                fw.append(rs.getString(1));
+                fw.append(',');
+                fw.append(rs.getString(2));
+                fw.append(',');
+                fw.append(" "+rs.getString(3));
+                fw.append(',');
+                fw.append(" "+rs.getString(4));
+                fw.append(',');
+                fw.append(" "+rs.getString(5));
+                fw.append('\n');
+         
+               }
+            fw.flush();
+            fw.close();
+            conn.close();
+            JFrame f;  
+            f=new JFrame();  
+            JOptionPane.showMessageDialog(f,"Computer details data has been saved to this directory d:\\LibraryPcData in excel format.");     
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }    
     private void formComponentHidden(java.awt.event.ComponentEvent evt) {                                     
         // TODO add your handling code here:
     }                                    
