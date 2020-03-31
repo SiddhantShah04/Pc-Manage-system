@@ -230,7 +230,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(200, 50, 0, 0));
-        setUndecorated(true);
+        
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentHidden(java.awt.event.ComponentEvent evt) {
@@ -309,7 +309,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         close.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         close.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        close.setText("X");
+        close.setText("");
         close.setOpaque(true);
         close.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
@@ -748,9 +748,8 @@ public class Dashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
         try{
                     Class.forName("com.mysql.jdbc.Driver");
-							//local host is good
-                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
-							
+					//local host is good
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  		
                     PreparedStatement stmt = con.prepareStatement("select * from students where pc=?");
                     stmt.setInt(1,Integer.parseInt(jTextField1.getText()));
                     ResultSet rs = stmt.executeQuery();
@@ -767,22 +766,21 @@ public class Dashboard extends javax.swing.JFrame {
     }                                  
 
     private void Submit1ActionPerformed(java.awt.event.ActionEvent evt) {   
-        
-        
          try{
                     Class.forName("com.mysql.jdbc.Driver");
 							//local host is good
                     Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
 							
-                    PreparedStatement stmt = con.prepareStatement("select * from students where endTime is Null and SIMS=?");
-                    
-                    stmt.setInt(1,Integer.parseInt(SIMS.getText()));
+                    PreparedStatement stmt = con.prepareStatement("select * from students where endTime is Null and  (pc=? or SIMS=?)");
+                    stmt.setInt(1,Integer.parseInt(pcNo.getText()));
+                    stmt.setInt(2,Integer.parseInt(SIMS.getText()));
+                     
                     ResultSet rs = stmt.executeQuery();
                   
                     if(rs.next()){
                      JFrame f;  
                         f=new JFrame();  
-                        JOptionPane.showMessageDialog(f,"This SIMS number is already Log in with some computer","Alert",JOptionPane.WARNING_MESSAGE);    				 
+                        JOptionPane.showMessageDialog(f,"This SIMS or Computer number is already taken by some student","Alert",JOptionPane.WARNING_MESSAGE);    				 
                     return;	 
                     }
                 	
@@ -790,10 +788,10 @@ public class Dashboard extends javax.swing.JFrame {
 		}catch(Exception a){System.out.println(a);}   
         
         // TODO add your handling code here:
-        if(Integer.parseInt(pcNo.getText())>20){
+        if(Integer.parseInt(pcNo.getText())>22){
             JFrame f;  
             f=new JFrame();  
-            JOptionPane.showMessageDialog(f,"Computer number cannot be greater than 16","Alert",JOptionPane.WARNING_MESSAGE);     
+            JOptionPane.showMessageDialog(f,"Computer number cannot be greater than 22","Alert",JOptionPane.WARNING_MESSAGE);     
            
         }
             
@@ -870,8 +868,10 @@ public class Dashboard extends javax.swing.JFrame {
     }  
     private void PrintActionPerformed(java.awt.event.ActionEvent evt) {                                      
         // TODO add your handling code here:
-        
-    String filename ="d:\\LibraryPcData\\LibrayDetails.csv";
+         int k = 1;
+         int j =0;
+           String i[] = new String[100];
+    String filename ="D:\\LibraryPcData\\LibrayDetails.csv";
         try {
             FileWriter fw = new FileWriter(filename);
             fw.append("Computer Number");
@@ -884,12 +884,26 @@ public class Dashboard extends javax.swing.JFrame {
             fw.append(",");
             fw.append("SignOut Time");
             fw.append(",");
+            fw.append("Total");
+            fw.append(",");
             fw.append("\n");
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1", "root", "admin");
-            String query = "select * from students order by pc";
+            String query = "select * from students order by date";
+            String query2 = "select count(date) from students group by date";
+           
             Statement stmt = conn.createStatement();
+            Statement stmt2 = conn.createStatement();
+            ResultSet rs2 = stmt2.executeQuery(query2);
             ResultSet rs = stmt.executeQuery(query);
+            while(rs2.next()){
+                i[j] =rs2.getString(1);
+                j++;
+            }
+            for(int m=0;m<=2;m++){
+                System.out.println(i[m]);
+            }
+            j=0;
             while (rs.next()) {
                 fw.append(rs.getString(1));
                 fw.append(',');
@@ -900,15 +914,28 @@ public class Dashboard extends javax.swing.JFrame {
                 fw.append(" "+rs.getString(4));
                 fw.append(',');
                 fw.append(" "+rs.getString(5));
-                fw.append('\n');
-         
+                
+               if(k== Integer.parseInt(i[j])){
+                    k=0;
+                    fw.append(',');
+                     fw.append(i[j]);
+                     fw.append('\n');
+                    
+                      j++;
                }
+                
+                fw.append('\n');
+                k++;
+               
+               }
+            
+            
             fw.flush();
             fw.close();
             conn.close();
             JFrame f;  
             f=new JFrame();  
-            JOptionPane.showMessageDialog(f,"Computer details data has been saved to this directory d:\\LibraryPcData in excel format.");     
+            JOptionPane.showMessageDialog(f,"Computer details data has been saved to this directory D:\\LibraryPcData in excel format.");     
            
         } catch (Exception e) {
             e.printStackTrace();
@@ -1037,7 +1064,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JTextField pcNo;
     private javax.swing.JFrame seeDetail;
     DefaultTableModel model,modelDashobard;
-     private javax.swing.JLabel Sidd;
+    private javax.swing.JLabel Sidd;
     
     // End of variables declaration                   
 
