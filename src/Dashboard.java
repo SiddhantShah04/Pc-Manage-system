@@ -18,6 +18,8 @@ import javax.swing.table.DefaultTableModel;
  * @author sony
  */
 public class Dashboard extends javax.swing.JFrame {
+
+    public int tRow;
     
     /**
      * Creates new form Dashboard
@@ -27,7 +29,7 @@ public class Dashboard extends javax.swing.JFrame {
         RegistrationPn.setVisible(false);
         seeDetail.setVisible(false);
         model=(DefaultTableModel) jTable1.getModel();
-        
+       
         modelDashobard =(DefaultTableModel) dashboardTable.getModel();
         
         try{
@@ -42,6 +44,7 @@ public class Dashboard extends javax.swing.JFrame {
                     while(rs.next()){
                         				 
                         modelDashobard.addRow(new Object[]{rs.getInt(1),rs.getInt(2), rs.getDate(3),rs.getTime(4)});
+                        tRow++;
                     }
                 		
 		con.close();
@@ -715,6 +718,7 @@ public class Dashboard extends javax.swing.JFrame {
             seeDetail.setVisible(true);
         }
         //Table for see Details    
+        
              
          try{
                     Class.forName("com.mysql.jdbc.Driver");
@@ -725,9 +729,12 @@ public class Dashboard extends javax.swing.JFrame {
                     
                     ResultSet rs = stmt.executeQuery();
                     model.setRowCount(0);
+                    
+                    
                     while(rs.next()){
 										 
                         model.addRow(new Object[]{rs.getInt(1)+"                 ",rs.getInt(2)+"              ","       "+ rs.getDate(3),"          "+rs.getTime(4),"         "+rs.getTime(5)});
+                        tRow++;
                     }
                 		
 		con.close();
@@ -870,7 +877,7 @@ public class Dashboard extends javax.swing.JFrame {
         // TODO add your handling code here:
          int k = 1;
          int j =0;
-           String i[] = new String[100];
+           String i[] = new String[tRow];
     String filename ="D:\\LibraryPcData\\LibrayDetails.csv";
         try {
             FileWriter fw = new FileWriter(filename);
@@ -891,17 +898,16 @@ public class Dashboard extends javax.swing.JFrame {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1", "root", "admin");
             String query = "select * from students order by date";
             String query2 = "select count(date) from students group by date";
+            
            
             Statement stmt = conn.createStatement();
             Statement stmt2 = conn.createStatement();
             ResultSet rs2 = stmt2.executeQuery(query2);
             ResultSet rs = stmt.executeQuery(query);
+            
             while(rs2.next()){
                 i[j] =rs2.getString(1);
                 j++;
-            }
-            for(int m=0;m<=2;m++){
-                System.out.println(i[m]);
             }
             j=0;
             while (rs.next()) {
@@ -915,11 +921,11 @@ public class Dashboard extends javax.swing.JFrame {
                 fw.append(',');
                 fw.append(" "+rs.getString(5));
                 
-               if(k== Integer.parseInt(i[j])){
+               if(k == Integer.parseInt(i[j])){
                     k=0;
                     fw.append(',');
-                     fw.append(i[j]);
-                     fw.append('\n');
+                    fw.append(i[j]);
+                    fw.append('\n');
                     
                       j++;
                }
