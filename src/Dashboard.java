@@ -875,7 +875,8 @@ public class Dashboard extends javax.swing.JFrame {
     }  
     private void PrintActionPerformed(java.awt.event.ActionEvent evt) {                                      
         // TODO add your handling code here:
-         int k = 1;
+        new DateExcel().setVisible(true); 
+        int k = 1;
          int j =0;
            String i[] = new String[tRow];
     String filename ="D:\\LibraryPcData\\LibrayDetails.csv";
