@@ -1,5 +1,11 @@
 
+import java.io.FileWriter;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -12,7 +18,104 @@ import javax.swing.JFrame;
  * @author sony
  */
 public class DateExcel extends javax.swing.JFrame {
-
+    void getExcel(Date start,Date end){
+       
+       
+        int k = 1;
+         int j =0;
+        int tRow=100;
+        String i[] = new String[tRow];
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        final String stringDate= dateFormat.format(start);
+        final java.sql.Date sqlStart=  java.sql.Date.valueOf(stringDate);
+        
+        final String stringDate2 = dateFormat.format(end);
+        final java.sql.Date sqlEnd=  java.sql.Date.valueOf(stringDate2);
+        
+        
+    try{
+            Class.forName("com.mysql.jdbc.Driver");
+            //local host is good
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1","root","admin");  
+            PreparedStatement stmt = con.prepareStatement("select * from students where students.date between ? and ?");
+            stmt.setDate(1,sqlEnd);
+            stmt.setDate(2,sqlStart);
+            ResultSet rs = stmt.executeQuery();	
+            
+            
+             String query2 = "select count(date) from students group by date";
+           
+            Statement stmt2 = con.createStatement();
+            ResultSet rs2 = stmt2.executeQuery(query2);
+            
+             while(rs2.next()){
+                i[j] =rs2.getString(1);
+                j++;
+               
+            }
+            //for(int m=0;m<j;m++){
+              //  System.out.println(i[m]);
+            
+            
+            
+            String filename ="D:\\LibraryPcData\\LibrayDetails.csv";
+        
+            FileWriter fw = new FileWriter(filename);
+            fw.append("Computer Number");
+            fw.append(",");
+            fw.append("SIMS");
+            fw.append(",");
+            fw.append("Date");
+            fw.append(",");
+            fw.append("SignIn Time");
+            fw.append(",");
+            fw.append("SignOut Time");
+            fw.append(",");
+            fw.append("Total");
+            fw.append(",");
+            fw.append("\n");
+           
+           
+            j=0;
+            while (rs.next()) {
+                fw.append(rs.getString(1));
+                fw.append(',');
+                fw.append(rs.getString(2));
+                fw.append(',');
+                fw.append(" "+rs.getString(3));
+                fw.append(',');
+                fw.append(" "+rs.getString(4));
+                fw.append(',');
+                fw.append(" "+rs.getString(5));
+                System.out.println(k);
+               if(k == Integer.parseInt(i[j])){
+                   System.out.println(k);
+                   k=0;
+                    fw.append(',');
+                    fw.append(i[j]);
+                    fw.append('\n');
+                    
+                      j++;
+               }
+                
+                fw.append('\n');
+                k++;
+               
+               }
+            fw.flush();
+            fw.close();
+            con.close();
+            JFrame f;  
+            f=new JFrame();  
+            JOptionPane.showMessageDialog(f,"Computer details data has been saved to this directory D:\\LibraryPcData in excel format.");     
+          
+    
+    }catch(Exception e){
+        System.out.println(e);
+    }    
+            
+        
+    }
     /**
      * Creates new form DateExcel
      */
@@ -231,17 +334,26 @@ public class DateExcel extends javax.swing.JFrame {
 
     private void CancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CancelMouseClicked
         // TODO add your handling code here:
-        
         this.dispose();
-
     }//GEN-LAST:event_CancelMouseClicked
 
     private void last90DaysMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_last90DaysMouseClicked
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_last90DaysMouseClicked
 
     private void last7DaysMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_last7DaysMouseClicked
-        // TODO add your handling code here:
+
+        long ctm;
+        //the line below just give the total days in milisecond then covert the mili second into days use date module.
+        ctm = System.currentTimeMillis()- TimeUnit.MILLISECONDS.convert(6, TimeUnit.DAYS);
+        java.sql.Date end = new java.sql.Date(ctm);
+        
+        long ctm2 = System.currentTimeMillis();
+        java.sql.Date start = new java.sql.Date(ctm2);
+        getExcel(start,end);
+       
+        
     }//GEN-LAST:event_last7DaysMouseClicked
 
     private void last30DaysMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_last30DaysMouseClicked
@@ -263,6 +375,37 @@ public class DateExcel extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(DateExcel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(DateExcel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(DateExcel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(DateExcel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new DateExcel().setVisible(true);
+            }
+        });
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

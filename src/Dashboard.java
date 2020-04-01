@@ -897,7 +897,7 @@ public class Dashboard extends javax.swing.JFrame {
             fw.append("\n");
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1", "root", "admin");
-            String query = "select * from students order by date";
+            String query = "select * from students order by date desc";
             String query2 = "select count(date) from students group by date";
             
            
