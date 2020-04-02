@@ -20,11 +20,10 @@ import javax.swing.JOptionPane;
 public class DateExcel extends javax.swing.JFrame {
     void getExcel(Date start,Date end){
        
-       
         int k = 1;
-         int j =0;
-        int tRow=100;
-        String i[] = new String[tRow];
+        int j =0;
+        
+        System.out.println(start);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         final String stringDate= dateFormat.format(start);
         final java.sql.Date sqlStart=  java.sql.Date.valueOf(stringDate);
@@ -42,12 +41,17 @@ public class DateExcel extends javax.swing.JFrame {
             stmt.setDate(2,sqlStart);
             ResultSet rs = stmt.executeQuery();	
             
+            //count the number of times the computers are used;
+            PreparedStatement stmt2 = con.prepareStatement("select count(date) from students where students.date between ? and ? group by date");
+            stmt2.setDate(1,sqlEnd);
+            stmt2.setDate(2,sqlStart);
+            ResultSet rs2 = stmt2.executeQuery();
+            rs2.last();
+            int count = rs2.getRow();
+            rs2.beforeFirst();
             
-             String query2 = "select count(date) from students group by date";
-           
-            Statement stmt2 = con.createStatement();
-            ResultSet rs2 = stmt2.executeQuery(query2);
             
+            String i[] = new String[count];
              while(rs2.next()){
                 i[j] =rs2.getString(1);
                 j++;
@@ -55,11 +59,8 @@ public class DateExcel extends javax.swing.JFrame {
             }
             //for(int m=0;m<j;m++){
               //  System.out.println(i[m]);
-            
-            
-            
-            String filename ="D:\\LibraryPcData\\LibrayDetails.csv";
         
+            String filename ="D:\\LibraryPcData\\LibrayDetails.csv";
             FileWriter fw = new FileWriter(filename);
             fw.append("Computer Number");
             fw.append(",");
@@ -75,7 +76,6 @@ public class DateExcel extends javax.swing.JFrame {
             fw.append(",");
             fw.append("\n");
            
-           
             j=0;
             while (rs.next()) {
                 fw.append(rs.getString(1));
@@ -87,20 +87,16 @@ public class DateExcel extends javax.swing.JFrame {
                 fw.append(" "+rs.getString(4));
                 fw.append(',');
                 fw.append(" "+rs.getString(5));
-                System.out.println(k);
+                
                if(k == Integer.parseInt(i[j])){
-                   System.out.println(k);
-                   k=0;
+                    k=0;
                     fw.append(',');
                     fw.append(i[j]);
                     fw.append('\n');
-                    
-                      j++;
-               }
-                
+                    j++;
+               }     
                 fw.append('\n');
                 k++;
-               
                }
             fw.flush();
             fw.close();
@@ -110,11 +106,9 @@ public class DateExcel extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(f,"Computer details data has been saved to this directory D:\\LibraryPcData in excel format.");     
           
     
-    }catch(Exception e){
-        System.out.println(e);
-    }    
-            
-        
+        }catch(Exception e){
+            System.out.println(e);
+        }    
     }
     /**
      * Creates new form DateExcel
@@ -141,8 +135,8 @@ public class DateExcel extends javax.swing.JFrame {
         last30Days = new javax.swing.JButton();
         Submit = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jDateChooser3 = new com.toedter.calendar.JDateChooser();
-        jDateChooser5 = new com.toedter.calendar.JDateChooser();
+        From = new com.toedter.calendar.JDateChooser();
+        To = new com.toedter.calendar.JDateChooser();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -167,11 +161,6 @@ public class DateExcel extends javax.swing.JFrame {
         Cancel.setText("Cancel");
         Cancel.setBorder(null);
         Cancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        Cancel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                CancelMouseClicked(evt);
-            }
-        });
         Cancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CancelActionPerformed(evt);
@@ -220,11 +209,6 @@ public class DateExcel extends javax.swing.JFrame {
         Submit.setText("Submit");
         Submit.setBorder(null);
         Submit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        Submit.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                SubmitMouseClicked(evt);
-            }
-        });
         Submit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SubmitActionPerformed(evt);
@@ -236,9 +220,12 @@ public class DateExcel extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(102, 102, 255));
         jLabel4.setText("To");
 
-        jDateChooser3.setBackground(new java.awt.Color(51, 102, 255));
+        From.setBackground(new java.awt.Color(51, 102, 255));
+        From.setDateFormatString("yyyy-MM-dd");
+        From.setMinSelectableDate(null);
 
-        jDateChooser5.setBackground(new java.awt.Color(51, 102, 255));
+        To.setBackground(new java.awt.Color(51, 102, 255));
+        To.setDateFormatString("yyyy-MM-dd");
 
         jLabel3.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(102, 102, 255));
@@ -264,7 +251,7 @@ public class DateExcel extends javax.swing.JFrame {
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jDateChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(From, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -274,7 +261,7 @@ public class DateExcel extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(35, 35, 35)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jDateChooser5, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(To, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(Submit, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGap(0, 12, Short.MAX_VALUE)))))))
                 .addContainerGap())
@@ -306,8 +293,8 @@ public class DateExcel extends javax.swing.JFrame {
                     .addComponent(jLabel4))
                 .addGap(4, 4, 4)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jDateChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDateChooser5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(From, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(To, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -332,13 +319,16 @@ public class DateExcel extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void CancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CancelMouseClicked
-        // TODO add your handling code here:
-        this.dispose();
-    }//GEN-LAST:event_CancelMouseClicked
-
     private void last90DaysMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_last90DaysMouseClicked
         // TODO add your handling code here:
+        long ctm;
+        //the line below just give the total days in milisecond then covert the mili second into days use date module.
+        ctm = System.currentTimeMillis()- TimeUnit.MILLISECONDS.convert(90, TimeUnit.DAYS);
+        java.sql.Date end = new java.sql.Date(ctm);
+        
+        long ctm2 = System.currentTimeMillis();
+        java.sql.Date start = new java.sql.Date(ctm2);
+        getExcel(start,end);
         
     }//GEN-LAST:event_last90DaysMouseClicked
 
@@ -358,18 +348,34 @@ public class DateExcel extends javax.swing.JFrame {
 
     private void last30DaysMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_last30DaysMouseClicked
         // TODO add your handling code here:
+        long ctm;
+        //the line below just give the total days in milisecond then covert the mili second into days use date module.
+        ctm = System.currentTimeMillis()- TimeUnit.MILLISECONDS.convert(90, TimeUnit.DAYS);
+        java.sql.Date end = new java.sql.Date(ctm);
+        
+        long ctm2 = System.currentTimeMillis();
+        java.sql.Date start = new java.sql.Date(ctm2);
+        getExcel(start,end);
     }//GEN-LAST:event_last30DaysMouseClicked
-
-    private void SubmitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SubmitMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_SubmitMouseClicked
 
     private void CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelActionPerformed
         // TODO add your handling code here:
+        this.dispose();
     }//GEN-LAST:event_CancelActionPerformed
 
     private void SubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitActionPerformed
         // TODO add your handling code here:
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String stringDate2 = dateFormat.format(To.getDate()); 
+        
+        final java.sql.Date sqlStart=  java.sql.Date.valueOf(stringDate2);
+     
+        String stringDate3 = dateFormat.format(From.getDate());
+        final java.sql.Date sqlEnd=  java.sql.Date.valueOf(stringDate3);
+        
+       
+        getExcel(sqlStart,sqlEnd);
     }//GEN-LAST:event_SubmitActionPerformed
 
     /**
@@ -410,9 +416,9 @@ public class DateExcel extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Cancel;
+    private com.toedter.calendar.JDateChooser From;
     private javax.swing.JButton Submit;
-    private com.toedter.calendar.JDateChooser jDateChooser3;
-    private com.toedter.calendar.JDateChooser jDateChooser5;
+    private com.toedter.calendar.JDateChooser To;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

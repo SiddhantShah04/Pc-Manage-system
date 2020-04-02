@@ -6,7 +6,6 @@
 
 
 import java.awt.Color;
-import java.io.FileWriter;
 import java.sql.*;
 import java.time.LocalTime;
 import javax.swing.JFrame;
@@ -876,77 +875,7 @@ public class Dashboard extends javax.swing.JFrame {
     private void PrintActionPerformed(java.awt.event.ActionEvent evt) {                                      
         // TODO add your handling code here:
         new DateExcel().setVisible(true); 
-        int k = 1;
-         int j =0;
-           String i[] = new String[tRow];
-    String filename ="D:\\LibraryPcData\\LibrayDetails.csv";
-        try {
-            FileWriter fw = new FileWriter(filename);
-            fw.append("Computer Number");
-            fw.append(",");
-            fw.append("SIMS");
-            fw.append(",");
-            fw.append("Date");
-            fw.append(",");
-            fw.append("SignIn Time");
-            fw.append(",");
-            fw.append("SignOut Time");
-            fw.append(",");
-            fw.append("Total");
-            fw.append(",");
-            fw.append("\n");
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?characterEncoding=latin1", "root", "admin");
-            String query = "select * from students order by date desc";
-            String query2 = "select count(date) from students group by date";
-            
-           
-            Statement stmt = conn.createStatement();
-            Statement stmt2 = conn.createStatement();
-            ResultSet rs2 = stmt2.executeQuery(query2);
-            ResultSet rs = stmt.executeQuery(query);
-            
-            while(rs2.next()){
-                i[j] =rs2.getString(1);
-                j++;
-            }
-            j=0;
-            while (rs.next()) {
-                fw.append(rs.getString(1));
-                fw.append(',');
-                fw.append(rs.getString(2));
-                fw.append(',');
-                fw.append(" "+rs.getString(3));
-                fw.append(',');
-                fw.append(" "+rs.getString(4));
-                fw.append(',');
-                fw.append(" "+rs.getString(5));
-                
-               if(k == Integer.parseInt(i[j])){
-                    k=0;
-                    fw.append(',');
-                    fw.append(i[j]);
-                    fw.append('\n');
-                    
-                      j++;
-               }
-                
-                fw.append('\n');
-                k++;
-               
-               }
-            
-            
-            fw.flush();
-            fw.close();
-            conn.close();
-            JFrame f;  
-            f=new JFrame();  
-            JOptionPane.showMessageDialog(f,"Computer details data has been saved to this directory D:\\LibraryPcData in excel format.");     
-           
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        
     }    
     private void formComponentHidden(java.awt.event.ComponentEvent evt) {                                     
         // TODO add your handling code here:

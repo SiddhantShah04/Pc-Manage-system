@@ -70,7 +70,7 @@
                               <Component id="jLabel2" alignment="1" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="jDateChooser3" min="-2" pref="176" max="-2" attributes="0"/>
+                                      <Component id="From" min="-2" pref="176" max="-2" attributes="0"/>
                                       <Component id="Cancel" min="-2" pref="118" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -82,7 +82,7 @@
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="jDateChooser5" min="-2" pref="176" max="-2" attributes="0"/>
+                                              <Component id="To" min="-2" pref="176" max="-2" attributes="0"/>
                                               <Component id="Submit" min="-2" pref="118" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
@@ -126,8 +126,8 @@
                   </Group>
                   <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jDateChooser3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jDateChooser5" min="-2" max="-2" attributes="0"/>
+                      <Component id="From" min="-2" max="-2" attributes="0"/>
+                      <Component id="To" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -186,7 +186,6 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="CancelMouseClicked"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CancelActionPerformed"/>
           </Events>
         </Component>
@@ -279,7 +278,6 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="SubmitMouseClicked"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SubmitActionPerformed"/>
           </Events>
         </Component>
@@ -297,18 +295,21 @@
             <Property name="text" type="java.lang.String" value="To"/>
           </Properties>
         </Component>
-        <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser3">
+        <Component class="com.toedter.calendar.JDateChooser" name="From">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="66" red="33" type="rgb"/>
             </Property>
+            <Property name="dateFormatString" type="java.lang.String" value="yyyy-MM-dd"/>
+            <Property name="minSelectableDate" type="java.util.Date" value="null"/>
           </Properties>
         </Component>
-        <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser5">
+        <Component class="com.toedter.calendar.JDateChooser" name="To">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="66" red="33" type="rgb"/>
             </Property>
+            <Property name="dateFormatString" type="java.lang.String" value="yyyy-MM-dd"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">
