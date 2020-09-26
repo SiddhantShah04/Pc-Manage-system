@@ -20,3 +20,6 @@ Developed with infinite lines of Java code compiled using Netbeans IDE. Perfectl
 # Resources
 * [Download Project (.jar | 418 KB)](https://drive.google.com/file/d/1i8ws9j_xrVvllo9eW2XJzSTio-dFfgWG/view?usp=sharing)
 * [Download Java Runtime Environment (Direct Link)](https://www.java.com/en/download/)
+
+# Technologies Used
+JAVA, ODBC, SWING, MYSQL.
